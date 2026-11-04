@@ -55,12 +55,17 @@ curl -X POST http://localhost:8080/api/notifications \
     "variables": {"code": "123456"},
     "priority": "HIGH"
   }'
-  
-  
-# push  
-curl -X POST http://localhost:8080/api/notifications \                                                                                                                                                      
-    -H "Content-Type: application/json" \                                                                                                                                                                     
-    -d '{"recipient":"hoon_push_test","channel":"PUSH","templateName":"welcome","variables":{"message":"원하는 내용"},"priority":"HIGH"}'
+
+# Send push notification (recipient = ntfy topic)
+curl -X POST http://localhost:8080/api/notifications \
+  -H "Content-Type: application/json" \
+  -d '{
+    "recipient": "hoon_push_test",
+    "channel": "PUSH",
+    "templateName": "welcome",
+    "variables": {"message": "원하는 내용"},
+    "priority": "HIGH"
+  }'
 ```
 
 ## Email delivery (Naver SMTP)
