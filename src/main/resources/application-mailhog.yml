@@ -1,0 +1,18 @@
+# Local testing profile: send all mail to Mailhog (http://localhost:8025) instead of Naver.
+# Run with: mvn spring-boot:run -Dspring-boot.run.profiles=mailhog
+spring:
+  mail:
+    host: localhost
+    port: 1025
+    username: ""
+    password: ""
+    properties:
+      mail:
+        smtp:
+          auth: false
+          ssl:
+            enable: false
+
+app:
+  mail:
+    from: notifications@example.com

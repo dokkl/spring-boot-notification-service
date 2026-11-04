@@ -15,23 +15,38 @@ spring:
       properties:
         spring.json.trusted.packages: com.anupam.notification.model
 
+  # Naver SMTP (SSL 465). Credentials come from environment variables — never commit them.
+  #   NAVER_MAIL_USERNAME : full Naver address, e.g. yourid@naver.com
+  #   NAVER_MAIL_PASSWORD : Naver password, or app password if 2-step verification is on
+  # For local testing with Mailhog instead, run with --spring.profiles.active=mailhog
   mail:
-    host: localhost
-    port: 1025
-    username: ""
-    password: ""
+    host: smtp.naver.com
+    port: 465
+    username: ${NAVER_MAIL_USERNAME:}
+    password: ${NAVER_MAIL_PASSWORD:}
+    default-encoding: UTF-8
     properties:
       mail:
         smtp:
-          auth: false
-          starttls:
-            enable: false
+          auth: true
+          ssl:
+            enable: true
+            trust: smtp.naver.com
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
 
 app:
+  push:
+    ntfy:
+      base-url: ${NTFY_BASE_URL:https://ntfy.sh}
+  mail:
+    # Naver rejects mail whose From differs from the authenticated account, so default to the login address.
+    from: ${NAVER_MAIL_FROM:${spring.mail.username}}
   kafka:
     topic: notifications
     dlt-topic: notifications-dlt
