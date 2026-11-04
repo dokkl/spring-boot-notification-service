@@ -5,6 +5,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -20,10 +21,13 @@ public class EmailChannel implements NotificationChannel {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
+    private final String fromAddress;
 
-    public EmailChannel(JavaMailSender mailSender, TemplateEngine templateEngine) {
+    public EmailChannel(JavaMailSender mailSender, TemplateEngine templateEngine,
+                        @Value("${app.mail.from}") String fromAddress) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
+        this.fromAddress = fromAddress;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class EmailChannel implements NotificationChannel {
             helper.setTo(request.recipient());
             helper.setSubject(resolveSubject(request.templateName()));
             helper.setText(htmlContent, true);
-            helper.setFrom("notifications@example.com");
+            helper.setFrom(fromAddress);
 
             mailSender.send(message);
             log.info("Email sent to: {}", request.recipient());
